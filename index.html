@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Huyễn Tranh Giới</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Noto+Serif:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e1636;--panel:#17224f;--line:#2c3b7d;--text:#e9f0ff;--muted:#a3b2dc;--ice:#a9dcff;--lav:#c0b4ff}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.65 "Be Vietnam Pro",system-ui,sans-serif}
+h1,h2,h3{font-family:"Noto Serif",serif;line-height:1.25;margin:0 0 .5em}
+h2{font-size:1.7rem}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--lav);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+nav{position:sticky;top:0;z-index:20;background:rgba(14,22,54,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);display:flex;gap:4px;overflow-x:auto;padding:8px 10px;scrollbar-width:none}
+nav a,nav button{flex:none;padding:8px 14px;border-radius:8px;text-decoration:none;color:var(--muted);font-weight:500;font-size:.95rem;background:none;border:0}
+nav a.on{background:var(--panel);color:var(--ice);box-shadow:inset 0 -2px 0 var(--ice)}
+nav button{margin-left:auto;border:1px solid var(--line);color:var(--ice);position:sticky;right:0;background:var(--bg)}
+
+main,.wrap{max-width:1000px;margin:0 auto;padding:24px 16px 40px}
+.page{display:none}.page.on{display:block}
+.lead{color:var(--muted);max-width:60ch;margin-bottom:20px}
+footer{text-align:center;color:var(--muted);font-size:.85rem;padding:0 16px 40px}
+
+/* Trang chủ */
+.hero{position:relative;min-height:min(80vh,640px);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;padding:48px 16px;
+background:linear-gradient(to top,var(--bg) 2%,rgba(14,22,54,.6) 40%,rgba(14,22,54,.05) 100%),var(--cover,linear-gradient(#1b2a6b,#0e1636)) center 35%/cover}
+.hero h1{font-size:clamp(2.4rem,9vw,4.4rem);letter-spacing:.02em;text-shadow:0 2px 18px rgba(10,16,50,.9);margin-bottom:.2em}
+.hero p{max-width:46ch;margin:0 auto 22px;text-shadow:0 1px 10px rgba(10,16,50,.95)}
+.btn{display:inline-block;margin:4px;padding:10px 22px;border-radius:8px;border:1px solid var(--ice);background:rgba(14,22,54,.5);color:var(--ice);text-decoration:none;font-weight:600}
+.btn.fill{background:var(--ice);color:#0e1636}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.tile{display:block;padding:16px 18px;border:1px solid var(--line);border-radius:10px;background:var(--panel);text-decoration:none;color:var(--text)}
+.tile b{display:block;font-family:"Noto Serif",serif;color:var(--ice);margin-bottom:2px}
+.tile span{color:var(--muted);font-size:.92rem}
+
+/* Thẻ */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.card{text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:0;overflow:hidden;display:block;width:100%}
+.card .pic{aspect-ratio:4/3;background:#1f2e6a center/cover;display:grid;place-items:center;font:700 2.6rem "Noto Serif",serif;color:var(--line)}
+.card .txt{padding:12px 14px 14px}
+.card h3{font-size:1.05rem;margin:0}
+.card small{color:var(--muted)}
+.tag{display:inline-block;font-size:.78rem;padding:1px 9px;border-radius:99px;border:1px solid var(--lav);color:var(--lav);margin:6px 4px 0 0}
+.tag.foe{border-color:#ff9aa8;color:#ff9aa8}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.chip{padding:6px 14px;border-radius:99px;border:1px solid var(--line);background:none;color:var(--muted)}
+.chip.on{border-color:var(--ice);color:var(--ice)}
+
+/* Bản đồ */
+.map{position:relative;aspect-ratio:16/10;border:1px solid var(--line);border-radius:10px;overflow:hidden;background-color:#16225a;background-position:center;background-size:cover;
+background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:10% 10%}
+.map.img{background-image:none}
+.pin{position:absolute;translate:-50% -50%;width:28px;height:28px;border-radius:50%;background:var(--ice);border:3px solid #fff;padding:0;box-shadow:0 0 0 5px rgba(169,220,255,.3)}
+.pin.on{background:var(--lav);scale:1.25;box-shadow:0 0 0 6px rgba(192,180,255,.4)}
+.pin span{position:absolute;top:100%;left:50%;translate:-50% 4px;white-space:nowrap;font-size:.8rem;font-weight:600;text-shadow:0 1px 3px #000,0 0 6px #000;pointer-events:none}
+.info{margin-top:14px;padding:18px;border:1px solid var(--line);border-radius:10px;background:var(--panel)}
+
+/* Mục xếp lớp */
+details{border:1px solid var(--line);border-radius:10px;background:var(--panel);margin-bottom:10px}
+summary{padding:14px 16px;cursor:pointer;font-family:"Noto Serif",serif;font-weight:600}
+details>div{padding:0 16px 16px}
+details p,dd{margin:.5em 0}
+.ladders{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:28px}
+.ladder{list-style:none;margin:0;padding:0;counter-reset:s}
+.ladder li{counter-increment:s;margin:0 0 8px calc(var(--i)*12px);padding:10px 14px 10px 44px;position:relative;border:1px solid var(--line);border-left:3px solid var(--ice);border-radius:8px;background:var(--panel)}
+.ladder li::before{content:counter(s);position:absolute;left:12px;top:10px;color:var(--ice);font:700 1rem "Noto Serif",serif}
+.ladder b{display:block}
+.ladder span{color:var(--muted);font-size:.92rem}
+.era{border-left:2px solid var(--line);padding:0 0 20px 18px;position:relative;margin-left:6px}
+.era::before{content:"";position:absolute;left:-7px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--ice)}
+.era ul{margin:.4em 0 0;padding-left:18px}
+.era small{color:var(--muted)}
+dt{font-family:"Noto Serif",serif;font-weight:600;color:var(--ice);margin-top:16px}
+dd{margin-left:0;color:var(--text)}
+.rec{margin:8px 0;padding:10px 14px;border-radius:8px;border:1px dashed var(--lav)}
+.rec ul{margin:4px 0 0;padding-left:20px}
+
+/* Hộp thoại */
+dialog{width:min(640px,94vw);max-height:88vh;overflow:auto;background:var(--panel);color:var(--text);border:1px solid var(--ice);border-radius:12px;padding:22px}
+dialog::backdrop{background:rgba(4,8,28,.78)}
+.x{float:right;background:none;border:1px solid var(--line);border-radius:8px;padding:2px 12px}
+.skill{border-left:3px solid var(--ice);padding:2px 0 2px 12px;margin:12px 0}
+.skill b{display:block}
+.skill em{color:var(--lav);font-style:normal;font-size:.85rem}
+.dpic{width:100%;max-height:260px;object-fit:cover;border-radius:8px;margin-bottom:12px}
+.q{width:100%;padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:var(--bg);margin:10px 0}
+.res{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:10px 4px}
+.res small{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<nav id="nav"></nav>
+
+<section class="page" id="home"></section>
+<main>
+  <section class="page" id="nhan-vat"><h2>Nhân vật</h2><div class="chips" id="charChips"></div><div class="grid" id="charGrid"></div></section>
+  <section class="page" id="ban-do"><h2>Bản đồ</h2><p class="lead">Bấm vào mốc sáng để xem tổng quan vùng đất.</p><div class="map" id="map"></div><div class="info" id="mapInfo"></div></section>
+  <section class="page" id="cot-truyen"><h2>Cốt truyện</h2><div id="story"></div></section>
+  <section class="page" id="dia-danh"><h2>Địa danh</h2><div class="grid" id="placeGrid"></div></section>
+  <section class="page" id="he-sinh-thai"><h2>Hệ sinh thái</h2><div class="chips" id="ecoChips"></div><div class="grid" id="ecoGrid"></div></section>
+  <section class="page" id="gia-kim"><h2>Vật phẩm và giả kim</h2><div class="chips" id="itemChips"></div><div class="grid" id="itemGrid"></div></section>
+  <section class="page" id="suc-manh"><h2>Hệ thống sức mạnh</h2><p class="lead">Quy luật vận hành của thế giới và các bậc cảnh giới.</p><div id="world"></div><div class="ladders" id="ladders"></div></section>
+  <section class="page" id="the-luc"><h2>Phe phái và thế lực</h2><div class="grid" id="facGrid"></div></section>
+  <section class="page" id="nien-bieu"><h2>Dòng thời gian</h2><div id="timeline"></div></section>
+  <section class="page" id="thuat-ngu"><h2>Từ điển thuật ngữ</h2><dl id="gloss"></dl></section>
+  <section class="page" id="cap-nhat"><h2>Bản cập nhật</h2><div id="updates"></div></section>
+</main>
+<footer id="foot"></footer>
+
+<dialog id="dlg"></dialog>
+
+<script>
+/* ==========================================================
+   CHỈ CẦN SỬA PHẦN DỮ LIỆU DƯỚI ĐÂY – KHÔNG CẦN ĐỘNG VÀO CODE
+   Ảnh: upload vào thư mục images/ rồi ghi "images/ten-anh.jpg".
+   Để trống "" thì web hiện chữ cái đầu của tên thay thế.
+   Thêm mục mới: copy nguyên một khối { ... } rồi dán sau nó (nhớ dấu phẩy).
+   ========================================================== */
+
+const CONFIG = {
+  name: "Huyễn Tranh Giới",
+  tagline: "Nơi ma pháp, giả kim, thần thoại và tu tiên phương Đông giao nhau.",
+  cover: "images/bia.jpg",
+  mapImage: "",                       // vd: "images/ban-do.jpg"
+  credit: "Ảnh bìa: 0616kotokoto"
+};
+
+const CHARS = [
+  { name: "Nhân vật 1", title: "Danh hiệu", he: "Tu tiên", img: "",
+    desc: "Giới thiệu, tiểu sử, tính cách...",
+    skills: [
+      { name: "Kỹ năng 1", type: "Chủ động", desc: "Mô tả hiệu ứng..." },
+      { name: "Kỹ năng 2", type: "Bị động", desc: "Mô tả..." },
+      { name: "Tuyệt kỹ", type: "Đại chiêu", desc: "Mô tả..." }
+    ] },
+  { name: "Nhân vật 2", title: "Danh hiệu", he: "Giả kim", img: "",
+    desc: "Giới thiệu...",
+    skills: [ { name: "Kỹ năng 1", type: "Chủ động", desc: "Mô tả..." } ] }
+];
+
+// x, y = vị trí mốc trên bản đồ, tính theo % (x: trái sang phải, y: trên xuống dưới)
+const PLACES = [
+  { name: "Vùng đất 1", loai: "Thành trì", x: 30, y: 40, img: "", summary: "Tổng quan ngắn về vùng đất này.", detail: "Lịch sử, khí hậu, cư dân, phe phái..." },
+  { name: "Vùng đất 2", loai: "Núi non", x: 65, y: 28, img: "", summary: "Tổng quan ngắn.", detail: "Chi tiết..." },
+  { name: "Vùng đất 3", loai: "Rừng", x: 55, y: 70, img: "", summary: "Tổng quan ngắn.", detail: "Chi tiết..." }
+];
+
+// "vung" ghi đúng tên một địa danh ở trên
+const ECO = {
+  "Thực vật": [ { name: "Cây 1", alias: "Tên khác", vung: "Vùng đất 3", img: "", desc: "Hình dáng, công dụng giả kim, độ hiếm..." } ],
+  "Động vật": [ { name: "Thú 1", alias: "Tên khác", vung: "Vùng đất 2", img: "", desc: "Tập tính, mức nguy hiểm, vật liệu rơi ra..." } ]
+};
+
+// loai: tự đặt (Nguyên liệu, Đan dược, Trang bị...). recipe: để [] nếu không có công thức
+const ITEMS = [
+  { name: "Nguyên liệu 1", loai: "Nguyên liệu", pham: "Phẩm thấp", img: "", desc: "Nguồn gốc, nơi tìm thấy, tính chất...", recipe: [] },
+  { name: "Đan dược 1", loai: "Đan dược", pham: "Phẩm trung", img: "", desc: "Công dụng, tác dụng phụ...",
+    recipe: ["Nguyên liệu 1 x2", "Nguyên liệu khác x1"], cach: "Cách luyện, lửa, thời gian..." },
+  { name: "Trang bị 1", loai: "Trang bị", pham: "Phẩm cao", img: "", desc: "Chỉ số, lai lịch...", recipe: [] }
+];
+
+const STORY = [
+  { title: "Chương 1: Tên chương", body: "Nội dung tóm tắt chương 1...\n\nChừa một dòng trống để xuống đoạn." },
+  { title: "Chương 2: Tên chương", body: "Nội dung chương 2..." }
+];
+
+const WORLD = [
+  { title: "Ma pháp", body: "Nguồn gốc, cách vận hành, giới hạn..." },
+  { title: "Giả kim", body: "Nguyên liệu, nguyên tắc, cấp bậc..." },
+  { title: "Tu tiên", body: "Linh khí, thiên kiếp, đạo tâm..." },
+  { title: "Thần thoại", body: "Các vị thần, truyền thuyết, tín ngưỡng..." }
+];
+
+// Các bậc ghi theo thứ tự từ thấp lên cao (tự đánh số)
+const REALMS = [
+  { ten: "Tu tiên", bac: [
+    { name: "Cảnh giới 1", desc: "Mô tả ngắn..." }, { name: "Cảnh giới 2", desc: "Mô tả ngắn..." },
+    { name: "Cảnh giới 3", desc: "Mô tả ngắn..." }, { name: "Cảnh giới 4", desc: "Mô tả ngắn..." } ] },
+  { ten: "Ma pháp", bac: [
+    { name: "Cấp bậc 1", desc: "Mô tả ngắn..." }, { name: "Cấp bậc 2", desc: "Mô tả ngắn..." },
+    { name: "Cấp bậc 3", desc: "Mô tả ngắn..." }, { name: "Cấp bậc 4", desc: "Mô tả ngắn..." } ] }
+];
+
+// dongminh / doidich: ghi đúng tên các thế lực khác trong danh sách này
+const FACTIONS = [
+  { name: "Thế lực 1", loai: "Tông môn", img: "", desc: "Tôn chỉ, lãnh đạo, căn cứ, sức mạnh...", dongminh: ["Thế lực 2"], doidich: [] },
+  { name: "Thế lực 2", loai: "Hội pháp sư", img: "", desc: "Mô tả...", dongminh: ["Thế lực 1"], doidich: ["Thế lực 3"] },
+  { name: "Thế lực 3", loai: "Thần giáo", img: "", desc: "Mô tả...", dongminh: [], doidich: ["Thế lực 2"] }
+];
+
+const TIMELINE = [
+  { era: "Thời đại 1", time: "Khoảng năm ... đến năm ...", events: [
+    { nam: "Năm 1", text: "Sự kiện quan trọng..." }, { nam: "Năm 120", text: "Sự kiện tiếp theo..." } ] },
+  { era: "Thời đại 2", time: "Khoảng năm ... đến nay", events: [ { nam: "Năm 800", text: "Sự kiện..." } ] }
+];
+
+const GLOSSARY = [
+  { term: "Linh khí", def: "Giải thích ngắn gọn thuật ngữ..." },
+  { term: "Mana", def: "Giải thích..." },
+  { term: "Đan dược", def: "Giải thích..." }
+];
+
+// Mục mới nhất ghi lên đầu
+const UPDATES = [
+  { date: "Ngày/tháng/năm", title: "Khởi tạo trang", items: ["Thêm khung nhân vật, bản đồ, cốt truyện", "Thêm mục giả kim, thế lực, dòng thời gian"] }
+];
+
+/* ==========================================================
+   PHẦN CODE – KHÔNG CẦN SỬA
+   ========================================================== */
+const $ = id => document.getElementById(id);
+const para = t => (t || "").split(/\n\s*\n/).map(p => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+const pic = (o, cls = "pic") => o.img ? `<div class="${cls}" style="background-image:url('${o.img}')"></div>` : `<div class="${cls}">${o.name[0]}</div>`;
+const dimg = o => o.img ? `<img class="dpic" src="${o.img}" alt="${o.name}">` : "";
+const tags = (l, c = "") => (l || []).map(t => `<span class="tag ${c}">${t}</span>`).join("");
+const card = (fn, o, sub, tag) => `<button class="card" onclick="${fn}">${pic(o)}<div class="txt"><h3>${o.name}</h3><small>${sub || ""}</small><br><span class="tag">${tag}</span></div></button>`;
+const acc = l => l.map((s, i) => `<details${i ? "" : " open"}><summary>${s.title}</summary><div>${para(s.body)}</div></details>`).join("");
+const norm = s => s.toLowerCase().replace(/đ/g, "d").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+const PAGES = [
+  ["home", "Trang chủ", ""], ["nhan-vat", "Nhân vật", "Tiểu sử và kỹ năng"], ["ban-do", "Bản đồ", "Bấm mốc để xem vùng đất"],
+  ["cot-truyen", "Cốt truyện", "Diễn biến theo chương"], ["dia-danh", "Địa danh", "Các vùng đất"],
+  ["he-sinh-thai", "Sinh thái", "Thực vật và động vật"], ["gia-kim", "Giả kim", "Nguyên liệu, đan dược, trang bị"],
+  ["suc-manh", "Sức mạnh", "Ma pháp, tu tiên, cảnh giới"], ["the-luc", "Thế lực", "Phe phái và quan hệ"],
+  ["nien-bieu", "Niên biểu", "Lịch sử qua các thời đại"], ["thuat-ngu", "Thuật ngữ", "Tra nhanh từ khó"], ["cap-nhat", "Cập nhật", "Những gì mới thêm"]
+];
+$("nav").innerHTML = PAGES.map(([id, t]) => `<a href="#${id}" data-p="${id}">${t}</a>`).join("") + `<button onclick="openSearch()">Tìm kiếm</button>`;
+document.title = CONFIG.name;
+$("foot").textContent = CONFIG.name + (CONFIG.credit ? "  –  " + CONFIG.credit : "");
+
+function route(){
+  const h = location.hash.slice(1), id = PAGES.some(p => p[0] === h) ? h : "home";
+  document.querySelectorAll(".page").forEach(s => s.classList.toggle("on", s.id === id));
+  document.querySelectorAll("nav a").forEach(a => {
+    const on = a.dataset.p === id; a.classList.toggle("on", on);
+    if (on) a.scrollIntoView({ inline: "center", block: "nearest" });
+  });
+  scrollTo(0, 0);
+}
+addEventListener("hashchange", route);
+
+function openDlg(html){
+  const d = $("dlg");
+  d.innerHTML = `<button class="x" onclick="dlg.close()">Đóng</button>${html}`;
+  if (!d.open) d.showModal();
+}
+$("dlg").addEventListener("click", e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+function chips(el, items, cb){
+  el.innerHTML = items.map((t, i) => `<button class="chip${i ? "" : " on"}">${t}</button>`).join("");
+  el.onclick = e => { if (!e.target.matches(".chip")) return;
+    el.querySelectorAll(".chip").forEach(b => b.classList.toggle("on", b === e.target)); cb(e.target.textContent); };
+}
+
+// Trang chủ
+$("home").innerHTML = `<div class="hero"><h1>${CONFIG.name}</h1><p>${CONFIG.tagline}</p>
+  <div><a class="btn fill" href="#ban-do">Xem bản đồ</a><a class="btn" href="#cot-truyen">Đọc cốt truyện</a></div></div>
+  <div class="wrap"><div class="tiles">${PAGES.slice(1).map(([id, t, d]) => `<a class="tile" href="#${id}"><b>${t}</b><span>${d}</span></a>`).join("")}</div></div>`;
+if (CONFIG.cover) $("home").querySelector(".hero").style.setProperty("--cover", `url('${CONFIG.cover}')`);
+
+// Nhân vật
+function drawChars(f){
+  $("charGrid").innerHTML = CHARS.map((c, i) => (f === "Tất cả" || c.he === f) ? card(`showChar(${i})`, c, c.title, c.he) : "").join("");
+}
+function showChar(i){
+  const c = CHARS[i];
+  openDlg(`${dimg(c)}<h3>${c.name}</h3><small>${c.title || ""}</small><br>${tags([c.he])}${para(c.desc)}
+    <h3 style="margin-top:18px">Kỹ năng</h3>${c.skills.map(s => `<div class="skill"><b>${s.name}</b><em>${s.type}</em><br>${s.desc}</div>`).join("")}`);
+}
+chips($("charChips"), ["Tất cả", ...new Set(CHARS.map(c => c.he))], drawChars); drawChars("Tất cả");
+
+// Bản đồ
+const map = $("map");
+if (CONFIG.mapImage){ map.classList.add("img"); map.style.backgroundImage = `url('${CONFIG.mapImage}')`; map.style.backgroundSize = "cover"; }
+map.innerHTML = PLACES.map((p, i) => `<button class="pin" style="left:${p.x}%;top:${p.y}%" data-i="${i}" aria-label="${p.name}"><span>${p.name}</span></button>`).join("");
+map.onclick = e => {
+  const b = e.target.closest(".pin"); if (!b) return;
+  const i = +b.dataset.i, p = PLACES[i];
+  map.querySelectorAll(".pin").forEach(x => x.classList.toggle("on", x === b));
+  $("mapInfo").innerHTML = `<h3>${p.name}</h3>${tags([p.loai])}<p>${p.summary}</p><button class="btn" onclick="showPlace(${i})">Xem chi tiết</button>`;
+};
+$("mapInfo").innerHTML = `<p class="lead" style="margin:0">Chưa chọn vùng nào.</p>`;
+
+// Địa danh
+function showPlace(i){
+  const p = PLACES[i];
+  const eco = Object.entries(ECO).flatMap(([k, l]) => l.filter(e => e.vung === p.name).map(e => `${e.name} (${k.toLowerCase()})`));
+  openDlg(`${dimg(p)}<h3>${p.name}</h3>${tags([p.loai])}<p><b>${p.summary}</b></p>${para(p.detail)}${eco.length ? `<p><small>Sinh vật tại đây: ${eco.join(", ")}</small></p>` : ""}`);
+}
+$("placeGrid").innerHTML = PLACES.map((p, i) => card(`showPlace(${i})`, p, p.summary, p.loai)).join("");
+
+// Hệ sinh thái
+function showEco(k, i){
+  const e = ECO[k][i];
+  openDlg(`${dimg(e)}<h3>${e.name}</h3><small>${e.alias || ""}</small><br>${tags([e.vung])}${para(e.desc)}`);
+}
+const drawEco = k => $("ecoGrid").innerHTML = ECO[k].map((e, i) => card(`showEco('${k}',${i})`, e, e.alias, e.vung)).join("");
+chips($("ecoChips"), Object.keys(ECO), drawEco); drawEco(Object.keys(ECO)[0]);
+
+// Vật phẩm và giả kim
+function showItem(i){
+  const t = ITEMS[i];
+  openDlg(`${dimg(t)}<h3>${t.name}</h3>${tags([t.loai, t.pham])}${para(t.desc)}
+    ${t.recipe && t.recipe.length ? `<div class="rec"><b>Công thức</b><ul>${t.recipe.map(r => `<li>${r}</li>`).join("")}</ul>${t.cach ? para(t.cach) : ""}</div>` : ""}`);
+}
+function drawItems(f){
+  $("itemGrid").innerHTML = ITEMS.map((t, i) => (f === "Tất cả" || t.loai === f) ? card(`showItem(${i})`, t, t.pham, t.loai) : "").join("");
+}
+chips($("itemChips"), ["Tất cả", ...new Set(ITEMS.map(t => t.loai))], drawItems); drawItems("Tất cả");
+
+// Cốt truyện, sức mạnh
+$("story").innerHTML = acc(STORY);
+$("world").innerHTML = acc(WORLD);
+$("ladders").innerHTML = REALMS.map(r => `<div><h3>${r.ten}</h3><ol class="ladder">${r.bac.map((b, i) => `<li style="--i:${Math.min(i, 6)}"><b>${b.name}</b><span>${b.desc}</span></li>`).join("")}</ol></div>`).join("");
+
+// Thế lực
+function showFac(i){
+  const f = FACTIONS[i];
+  openDlg(`${dimg(f)}<h3>${f.name}</h3>${tags([f.loai])}${para(f.desc)}
+    ${f.dongminh.length ? `<p><small>Đồng minh</small><br>${tags(f.dongminh)}</p>` : ""}${f.doidich.length ? `<p><small>Đối địch</small><br>${tags(f.doidich, "foe")}</p>` : ""}`);
+}
+$("facGrid").innerHTML = FACTIONS.map((f, i) => card(`showFac(${i})`, f, "", f.loai)).join("");
+
+// Niên biểu, thuật ngữ, cập nhật
+$("timeline").innerHTML = TIMELINE.map(e => `<div class="era"><h3>${e.era}</h3><small>${e.time}</small><ul>${e.events.map(v => `<li><b>${v.nam}:</b> ${v.text}</li>`).join("")}</ul></div>`).join("");
+$("gloss").innerHTML = [...GLOSSARY].sort((a, b) => a.term.localeCompare(b.term, "vi")).map(g => `<dt>${g.term}</dt><dd>${g.def}</dd>`).join("");
+$("updates").innerHTML = UPDATES.map(u => `<div class="era"><h3>${u.title}</h3><small>${u.date}</small><ul>${u.items.map(x => `<li>${x}</li>`).join("")}</ul></div>`).join("");
+
+// Tìm kiếm
+const IDX = [];
+CHARS.forEach((c, i) => IDX.push({ k: "Nhân vật", n: c.name, t: [c.name, c.title, c.desc], f: () => showChar(i) }));
+PLACES.forEach((p, i) => IDX.push({ k: "Địa danh", n: p.name, t: [p.name, p.summary, p.detail], f: () => showPlace(i) }));
+Object.entries(ECO).forEach(([k, l]) => l.forEach((e, i) => IDX.push({ k, n: e.name, t: [e.name, e.alias, e.desc], f: () => showEco(k, i) })));
+ITEMS.forEach((t, i) => IDX.push({ k: t.loai, n: t.name, t: [t.name, t.desc], f: () => showItem(i) }));
+FACTIONS.forEach((f, i) => IDX.push({ k: f.loai, n: f.name, t: [f.name, f.desc], f: () => showFac(i) }));
+GLOSSARY.forEach(g => IDX.push({ k: "Thuật ngữ", n: g.term, t: [g.term, g.def], f: () => openDlg(`<h3>${g.term}</h3>${para(g.def)}`) }));
+let hits = [];
+function openSearch(){
+  openDlg(`<h3>Tìm kiếm</h3><input class="q" id="q" type="search" placeholder="Gõ tên nhân vật, địa danh, vật phẩm..." autocomplete="off"><div id="qres"></div>`);
+  $("q").addEventListener("input", e => {
+    const s = norm(e.target.value.trim());
+    hits = s ? IDX.filter(x => norm(x.t.join(" ")).includes(s)).slice(0, 30) : [];
+    $("qres").innerHTML = s && !hits.length ? `<p class="lead">Không tìm thấy kết quả. Thử từ khoá ngắn hơn.</p>` :
+      hits.map((h, i) => `<button class="res" data-i="${i}"><b>${h.n}</b><br><small>${h.k}</small></button>`).join("");
+  });
+  $("qres").onclick = e => { const b = e.target.closest(".res"); if (b) hits[+b.dataset.i].f(); };
+  $("q").focus();
+}
+
+route();
+</script>
+</body>
+</html>
